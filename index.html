@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body);"></script>    
+    <title>Обучающая новелла "Классическая схема теории вероятностей"</title>
+    
+    <!-- Встроенный CSS -->
+    <style>
+        /* Стили для body */
+        body {
+            font-family: Roboto, Arial, Helvetica, sans-serif;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-size: 1.5em;
+        }
+
+        /* Стили для контейнера */
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Стили для изображения */
+        img {
+            margin-top: 15px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Кнопка */
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .image-container img {
+           transition: opacity 1s ease-in-out;
+            opacity: 1;
+        }
+
+        .image-container img.fade-out {
+            opacity: 0;
+        }        
+
+        #imageCube {
+            width: 57px; /* Установите размер по необходимости */
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .cubeButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }        
+    </style>
+</head>
+<body>
+
+    <!-- HTML контент -->
+    <div id="d1" class="container" style="display: block;">
+        <h1>Обучающая новелла </h1>
+        <h3>"Классическая схема теории вероятностей"</h3>
+        Рассмотрим решение простейших задач теории вероятностей.
+        <br><br>        
+        <button onclick="next('d1', 'd2')">Дальше...</button>
+    </div>
+
+    <div id="d2" class="container" style="display: none;">
+        <h3>Случайный выбор</h3>
+        <p>
+        Простейшая вероятностная ситуация состоит в том, что <em>случайно</em> делается выбор из <em>N</em> вариантов, 
+        например, подбрасывается шестигранный кубик. Среди этих <em>N</em> вариантов есть <em>M</em> вариантов, которые мы ассоциируем как "успех".
+        </p>
+        <p>
+            В этом случае вероятностью события <em>A</em>, которое состоит в том, что будет успех, 
+            определяется по формуле:
+        </p>
+        <p>
+            \[P(A)=\frac{M}{N}\]
+        </p>
+        <p>
+            Пример: подбрасывается кубик, событие <em>A</em> состоит в том, что выпадет нечетное число. 
+            В этом случае <em>N</em> = 6, <em>M</em> = 3, вероятность:
+        </p>
+        <p>
+            \[P(A)=\frac{3}{6}=\frac{1}{2}\]
+        </p>
+        <div><img src="n1_pic/cubes.png"/></div>
+        <br>
+        <button onclick="next('d2', 'd3')">Дальше...</button>
+    </div>
+
+    <div id="d3" class="container" style="display: none;">
+        <h3>Эксперимент</h3>
+        <p>
+            Бросайте кубик несколько раз и отмечайте, сколько раз будет нечетное число.
+        </p>
+        <p>
+            <img id="image" src="n1_pic/1.jpg">
+            <button id="cubeButton" class="cubeButton">Бросить кубик</button>
+        </p>
+        <p>
+            Частота выпадания нечетных чисел: <span id="prob">нет бросков</span>
+        </p>
+        <p>
+            При большом числе бросков частота выпадания нечетных чисел будет стремиться в 0.5.
+        </p>
+        <button onclick="next('d3', 'd1')">Дальше...</button>
+    </div>
+    <script>
+        // Массив с путями к изображениям
+        const images = ["n1_pic/1.jpg", "n1_pic/2.jpg", "n1_pic/3.jpg", "n1_pic/4.jpg", "n1_pic/5.jpg", "n1_pic/6.jpg"];
+        let currentIndex = 0; // Индекс текущей картинки
+        let intervalId; // Идентификатор интервала
+
+        let N = 0;
+        let M = 0;
+        let In = false;
+    
+        // Функция для переключения изображений
+        function startSlideshow() {
+            if (In) {
+                return;
+            }
+
+            In = true;
+            N++;
+            Count = Math.floor(Math.random() * (24 - 12 + 1)) + 12;
+
+            intervalId = setInterval(() => {
+                if (Count === 0) {
+                    if ((currentIndex % 2) === 1) {
+                        M++;
+                    }
+
+                    document.getElementById("prob").textContent = `${M}/${N}=${M/N}`;
+                    clearInterval(intervalId);
+                    In = false;
+                }
+                currentIndex = (currentIndex + 1) % images.length; // Следующее изображение по кругу
+                document.getElementById("image").src = images[currentIndex];
+                Count--;
+            }, 100); // Задержка в миллисекундах
+        }
+    
+        // Функция для остановки показа
+        function stopSlideshow() {
+            clearInterval(intervalId); // Останавливаем интервал
+        }
+
+  
+        // Событие для кнопки
+        document.getElementById("cubeButton").addEventListener("click", startSlideshow);
+    
+    </script>    
+
+    <!-- Встроенный JavaScript -->
+    <script>
+        function next(id1, id2) {
+
+            let e = document.getElementById(id1);
+            e.style.display = 'none'
+
+            e = document.getElementById(id2);
+            e.style.display = 'block'
+        }
+    </script>
+
+</body>
+</html>
